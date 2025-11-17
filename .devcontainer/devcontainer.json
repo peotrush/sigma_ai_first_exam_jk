@@ -1,0 +1,28 @@
+{
+  "name": "My Dev Environment",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "anthropic.claude-code"
+      ],
+      "settings": {
+        "editor.formatOnSave": true
+      }
+    }
+  },
+  
+  "postCreateCommand": "npm install",
+  
+  "forwardPorts": [3000, 8080],
+  
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {}
+  }
+}
