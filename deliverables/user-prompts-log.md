@@ -209,14 +209,69 @@
 
 ---
 
+### Prompt #44
+**Type**: Agent Activation
+**Command**: `/BMad:agents:architect`
+**Purpose**: Activated Architect agent (Winston) for technical architecture and DevContainer configuration
+
+---
+
+### Prompt #45
+**Type**: Investigation Request
+**Request**: "do you have a trace that we have attempted to change the current container setup in order to be able to run the application in it?"
+**Purpose**: Review previous DevContainer modification attempts
+**Outcome**: Confirmed changes to .devcontainer/Dockerfile and .devcontainer/devcontainer.json, plus two new files (init-db.sh, supervisord.conf) for single-container PostgreSQL+Redis setup
+
+---
+
+### Prompt #46
+**Type**: Problem Report
+**Request**: "after i rebuild the container however i get the following problem: [error log showing PostgreSQL never starts, sudo command not found, exit code 127]"
+**Purpose**: Report container rebuild failure with timing issues and missing sudo command
+**Analysis Performed**:
+  - Root causes identified: Missing sudo package, race condition in postCreateCommand, wrong execution order
+  - Two solution paths proposed: Path A (Docker Compose - recommended) vs Path B (Fix single container)
+**User Decision**: Selected Path A (Docker Compose approach)
+
+---
+
+### Prompt #47
+**Type**: Documentation Inquiry
+**Request**: "is the current approach for the config documented and where?"
+**Purpose**: Locate existing documentation for container setup
+**Outcome**: Found documentation in docs/deployment-evaluation-local-container-demo.md (recommends Docker Compose) and docs/architecture.md (references Docker Compose for dev environment)
+
+---
+
+### Prompt #48
+**Type**: Documentation Strategy
+**Request**: "first we need to add it to an experiment architecture file and after we confirm that the experiment is successful we will update the entire architecture document."
+**Purpose**: Request experimental documentation approach before merging to main architecture
+**Outcome**: Created comprehensive experimental doc at docs/architecture-devcontainer-experiment.md with full setup details, success criteria, and testing procedures
+**Implementation Completed**:
+  - Created .devcontainer/docker-compose.yml with three services (api, db, cache)
+  - Updated .devcontainer/devcontainer.json to use Docker Compose
+  - Simplified .devcontainer/Dockerfile (Node.js + PostgreSQL client only)
+  - Removed obsolete files (init-db.sh, supervisord.conf)
+
+---
+
+### Prompt #49
+**Type**: Documentation Update
+**Request**: "update my user-prompts-log.md"
+**Purpose**: Update prompt log with Architect session activities
+
+---
+
 ## Session Summary
 
-- **Total Prompts**: 43
-- **Session Focus**: Smart Budget Application - Complete product lifecycle from discovery to detailed UI/UX specifications
+- **Total Prompts**: 49
+- **Session Focus**: Smart Budget Application - Complete product lifecycle from discovery to detailed UI/UX specifications and DevContainer architecture
 - **Agents Used**:
   - Mary (Business Analyst) - Prompts 1-27
   - John (Product Manager) - Prompts 28-34
   - Sally (UX Expert) - Prompts 35-43
+  - Winston (Architect) - Prompts 44-49
 - **Files Created**:
   - deliverables/user-prompts-log.md (this file)
   - docs/brainstorming-session-results.md (comprehensive feature exploration - 45+ ideas)
@@ -225,6 +280,14 @@
   - docs/prd/ (16 sharded documents - epics, requirements, technical assumptions)
   - docs/front-end-spec.md (complete UI/UX specification - 15,000+ words)
   - docs/wireframes-detailed.md (detailed wireframe specs - 21,000+ words, 8 screens)
+  - docs/architecture-devcontainer-experiment.md (experimental DevContainer architecture documentation)
+  - .devcontainer/docker-compose.yml (three-service orchestration: api, db, cache)
+- **Files Modified**:
+  - .devcontainer/Dockerfile (simplified to Node.js + PostgreSQL client only)
+  - .devcontainer/devcontainer.json (updated to use Docker Compose)
+- **Files Removed**:
+  - .devcontainer/init-db.sh (replaced by Docker Compose auto-initialization)
+  - .devcontainer/supervisord.conf (replaced by Docker Compose orchestration)
 - **Key Decisions Made**:
   - Bulgarian QR receipt scanning as core differentiator
   - Kash mascot as emotional interface
@@ -239,6 +302,8 @@
   - YOLO mode for efficient document generation
   - **Code-first approach** - Skip external design tools, implement directly in VS Code
   - **Architecture-first workflow** - Create technical architecture before implementation
+  - **DevContainer approach** - Docker Compose (3 services) over single container for better maintainability
+  - **Experimental documentation** - Test architecture changes before merging to main docs
 - **Design Specifications Completed**:
   - Complete design system (colors, typography, spacing, components)
   - Information architecture with site maps
@@ -248,8 +313,18 @@
   - Pixel-perfect wireframes with exact dimensions for all elements
   - WCAG AA accessibility requirements
   - 12 micro-interaction animations
-- **Session Duration**: Full product definition lifecycle completed (discovery → planning → requirements → sharding → UI/UX design)
-- **Next Step**: Hand off to Architect Agent (`/BMad:agents:architect`) for technical architecture creation, then proceed to implementation
+- **DevContainer Architecture Completed**:
+  - Root cause analysis of container failure (sudo missing, race conditions, wrong execution order)
+  - Migration from single-container (supervisord) to Docker Compose (three services)
+  - Service isolation: api (Node.js 20) + db (PostgreSQL 15) + cache (Redis 7)
+  - Automatic service orchestration with health checks and dependency management
+  - Persistent volumes for database and cache data
+  - Environment variables auto-configured for development
+  - Experimental documentation with success criteria and testing procedures
+  - Production-aligned architecture (mirrors AWS deployment pattern)
+- **Session Duration**: Full product definition lifecycle completed (discovery → planning → requirements → sharding → UI/UX design → DevContainer architecture)
+- **Current Status**: DevContainer Docker Compose setup implemented, awaiting container rebuild test
+- **Next Step**: Rebuild DevContainer to test three-service architecture, then create full system architecture document before implementation
 
 ## Notes
 

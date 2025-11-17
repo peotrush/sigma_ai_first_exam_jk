@@ -1,19 +1,41 @@
 {
-  "name": "exercise",
+  "name": "kash-budget",
   "version": "1.0.0",
-  "description": "Exam for Sirma Course",
-  "main": "src/index.js",
+  "description": "Kash Budget - Mobile-first personal finance app with guilt-free spending philosophy",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "start": "node src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "bmad:refresh": "bmad-method install -f -i codex",
-    "bmad:list": "bmad-method list:agents",
-    "bmad:validate": "bmad-method validate"
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "api:dev": "npm run dev --workspace=apps/api",
+    "api:build": "npm run build --workspace=apps/api",
+    "api:test": "npm run test --workspace=apps/api",
+    "mobile:dev": "npm run dev --workspace=apps/mobile",
+    "mobile:test": "npm run test --workspace=apps/mobile",
+    "shared:build": "npm run build --workspace=packages/shared"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
   },
   "keywords": [
-    "exam",
-    "BMAD"
+    "budget",
+    "personal-finance",
+    "mobile-app",
+    "react-native",
+    "nestjs"
   ],
-  "author": "Jordan Kavaldjiev",
-  "license": "UNLICENSED"
+  "author": "Kash Team",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.0.0",
+    "prettier": "^3.1.0",
+    "typescript": "^5.3.2"
+  }
 }

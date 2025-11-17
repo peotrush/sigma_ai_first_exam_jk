@@ -1,10 +1,9 @@
 {
-  "name": "My Dev Environment",
-  "build": {
-    "dockerfile": "Dockerfile",
-    "context": "."
-  },
-  
+  "name": "Kash Budget - Full Stack",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "api",
+  "workspaceFolder": "/workspaces/exercise",
+
   "customizations": {
     "vscode": {
       "extensions": [
@@ -17,11 +16,9 @@
       }
     }
   },
-  
+
   "postCreateCommand": "npm install",
-  
-  "forwardPorts": [3000, 8080],
-  
+
   "features": {
     "ghcr.io/devcontainers/features/git:1": {}
   }
