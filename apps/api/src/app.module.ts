@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { HealthModule } from './health/health.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
+import { TransactionsModule } from './transactions/transactions.module';
 import { typeOrmConfig } from './config/typeorm.config';
 
 @Module({
@@ -16,8 +17,8 @@ import { typeOrmConfig } from './config/typeorm.config';
     DatabaseModule,
     HealthModule,
     AuthModule,
+    TransactionsModule,
     // TODO: Import additional modules here
-    // - TransactionsModule
     // - InsightsModule
     // - GamificationModule
     // - NotificationsModule

@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index, OneToMany } from 'typeorm';
+import { Transaction } from '../../transactions/entities/transaction.entity';
 
 /**
  * User Entity
@@ -34,4 +35,10 @@ export class UserEntity {
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.user, {
+    cascade: true,
+    eager: false,
+  })
+  transactions?: Transaction[];
 }

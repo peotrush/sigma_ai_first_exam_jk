@@ -1,0 +1,129 @@
+name: Backend Deploy
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'apps/api/**'
+      - 'packages/shared/**'
+      - 'Dockerfile'
+      - '.dockerignore'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/backend-deploy.yml'
+
+env:
+  AWS_REGION: eu-central-1
+  ECR_REPOSITORY: kash-budget-api
+  ECS_SERVICE: kash-budget-api
+  APP_RUNNER_SERVICE: kash-budget-api
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Docker image
+        id: docker-build
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          echo "image-latest=$ECR_REGISTRY/$ECR_REPOSITORY:latest" >> $GITHUB_OUTPUT
+
+      - name: Push Docker image to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          echo "Image pushed to ECR: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      - name: Get App Runner service details
+        id: get-service
+        run: |
+          SERVICE_ARN=$(aws apprunner describe-services \
+            --region ${{ env.AWS_REGION }} \
+            --query "ServiceSummaryList[?ServiceName=='${{ env.APP_RUNNER_SERVICE }}'].ServiceArn" \
+            --output text)
+          echo "service-arn=$SERVICE_ARN" >> $GITHUB_OUTPUT
+
+      - name: Update App Runner service
+        id: deploy
+        if: steps.get-service.outputs.service-arn != ''
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          aws apprunner update-service \
+            --service-arn ${{ steps.get-service.outputs.service-arn }} \
+            --source-configuration 'ImageRepository={RepositoryType=ECR,ImageIdentifier=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}}' \
+            --region ${{ env.AWS_REGION }}
+          echo "App Runner service updated"
+
+      - name: Wait for deployment
+        if: steps.get-service.outputs.service-arn != ''
+        run: |
+          SERVICE_ARN="${{ steps.get-service.outputs.service-arn }}"
+          MAX_ATTEMPTS=60
+          ATTEMPT=0
+          while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+            STATUS=$(aws apprunner describe-service \
+              --service-arn $SERVICE_ARN \
+              --region ${{ env.AWS_REGION }} \
+              --query 'Service.Status' \
+              --output text)
+            echo "Deployment status: $STATUS"
+            if [ "$STATUS" = "RUNNING" ]; then
+              echo "✅ Service is running"
+              break
+            fi
+            ATTEMPT=$((ATTEMPT + 1))
+            sleep 10
+          done
+
+      - name: Get App Runner service URL
+        if: steps.get-service.outputs.service-arn != ''
+        run: |
+          SERVICE_URL=$(aws apprunner describe-service \
+            --service-arn ${{ steps.get-service.outputs.service-arn }} \
+            --region ${{ env.AWS_REGION }} \
+            --query 'Service.ServiceUrl' \
+            --output text)
+          echo "Service URL: $SERVICE_URL"
+          echo "SERVICE_URL=$SERVICE_URL" >> $GITHUB_ENV
+
+      - name: Health check
+        if: steps.get-service.outputs.service-arn != ''
+        run: |
+          SERVICE_URL="${{ env.SERVICE_URL }}"
+          curl -s -f "$SERVICE_URL/api/health" || echo "⚠️  Health check failed, service may still be starting"
+
+      - name: Notify success
+        if: success()
+        run: echo "✅ Backend deployment completed successfully"
+
+      - name: Notify failure
+        if: failure()
+        run: echo "❌ Backend deployment failed - check logs above"

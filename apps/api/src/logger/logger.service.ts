@@ -79,14 +79,14 @@ export class LoggerService implements NestLoggerService {
   /**
    * Log at DEBUG level (custom method)
    */
-  debug(message: string, context?: string, metadata?: Record<string, any>): void {
+  debug(message: string, context?: string, metadata?: Record<string, string | number | boolean>): void {
     this.logger.debug(message, { context, ...metadata });
   }
 
   /**
    * Log verbose (custom method)
    */
-  verbose(message: string, context?: string, metadata?: Record<string, any>): void {
+  verbose(message: string, context?: string, metadata?: Record<string, string | number | boolean>): void {
     this.logger.info(message, { context, level: 'verbose', ...metadata });
   }
 }
