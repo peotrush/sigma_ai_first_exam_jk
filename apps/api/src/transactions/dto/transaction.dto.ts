@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { TransactionSource } from '../entities/transaction.entity';
+import { TransactionSource, TransactionType } from '../entities/transaction.entity';
 
 /**
  * DTO for returning transaction data in API responses
@@ -42,6 +42,11 @@ export class TransactionDto {
    * Source of transaction (QR scan or manual entry)
    */
   source!: TransactionSource;
+
+  /**
+   * Type of transaction (income or expense)
+   */
+  type!: TransactionType;
 
   /**
    * When this transaction was created in the system

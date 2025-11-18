@@ -17,7 +17,7 @@
     }
   },
 
-  "postCreateCommand": "npm install",
+  "postCreateCommand": "npm install --legacy-peer-deps",
 
   "features": {
     "ghcr.io/devcontainers/features/git:1": {}

@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "SlashCommand(/BMad:agents:pm)",
+      "Bash(md-tree explode:*)",
+      "SlashCommand(/BMad:agents:ux-expert)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(node --version:*)",
+      "Bash(npm --version:*)",
+      "Bash(psql:*)",
+      "Bash(redis-cli --version:*)",
+      "Bash(env)",
+      "Bash(docker compose:*)",
+      "Bash(tree:*)",
+      "Bash(npm install:*)",
+      "Bash(npm config get:*)",
+      "Bash(npm run api:build:*)",
+      "Bash(pkill:*)",
+      "Bash(curl:*)",
+      "Bash(netstat:*)",
+      "Bash(ss:*)",
+      "Bash(npm run test:*)",
+      "Bash(npm run lint:*)",
+      "Bash(docker build:*)",
+      "Bash(npm run build:*)",
+      "Bash(npx tsc:*)",
+      "Bash(git push:*)",
+      "Bash(git checkout:*)",
+      "Bash(npm audit:*)",
+      "Bash(npm view:*)",
+      "Bash(npm run api:test:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

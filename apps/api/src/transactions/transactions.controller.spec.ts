@@ -4,7 +4,7 @@ import { TransactionsController } from './transactions.controller';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { TransactionDto } from './dto/transaction.dto';
-import { TransactionSource } from './entities/transaction.entity';
+import { TransactionSource, TransactionType } from './entities/transaction.entity';
 
 describe('TransactionsController', () => {
   let controller: TransactionsController;
@@ -24,6 +24,7 @@ describe('TransactionsController', () => {
     category: null as any,
     location: null as any,
     source: TransactionSource.QR_SCAN,
+    type: TransactionType.EXPENSE,
     createdAt: new Date('2025-11-17T15:00:00Z'),
     updatedAt: new Date('2025-11-17T15:00:00Z'),
     ...overrides,
@@ -61,6 +62,7 @@ describe('TransactionsController', () => {
         amount: 42.5,
         timestamp: '2025-11-17T14:30:00Z',
         source: TransactionSource.QR_SCAN,
+        type: TransactionType.EXPENSE,
         category: 'Food',
       };
 

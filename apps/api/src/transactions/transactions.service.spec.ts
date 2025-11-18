@@ -3,7 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BadRequestException } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
-import { Transaction, TransactionSource } from './entities/transaction.entity';
+import { Transaction, TransactionSource, TransactionType } from './entities/transaction.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { TransactionDto } from './dto/transaction.dto';
 
@@ -24,6 +24,7 @@ describe('TransactionsService', () => {
     category: null as any,
     location: null as any,
     source: TransactionSource.QR_SCAN,
+    type: TransactionType.EXPENSE,
     createdAt: new Date('2025-11-17T15:00:00Z'),
     updatedAt: new Date('2025-11-17T15:00:00Z'),
     ...overrides,
@@ -58,6 +59,7 @@ describe('TransactionsService', () => {
         amount: 42.5,
         timestamp: '2025-11-17T14:30:00Z',
         source: TransactionSource.QR_SCAN,
+        type: TransactionType.EXPENSE,
         category: 'Food',
       };
 
@@ -105,6 +107,7 @@ describe('TransactionsService', () => {
         amount: -10.0,
         timestamp: '2025-11-17T14:30:00Z',
         source: TransactionSource.MANUAL,
+        type: TransactionType.EXPENSE,
       };
 
       mockRepository.create.mockImplementation(() => {
@@ -119,6 +122,7 @@ describe('TransactionsService', () => {
         amount: 0,
         timestamp: '2025-11-17T14:30:00Z',
         source: TransactionSource.MANUAL,
+        type: TransactionType.EXPENSE,
       };
 
       mockRepository.create.mockImplementation(() => {
@@ -133,6 +137,7 @@ describe('TransactionsService', () => {
         amount: 75.99,
         timestamp: '2025-11-16T12:00:00Z',
         source: TransactionSource.QR_SCAN,
+        type: TransactionType.EXPENSE,
         category: 'Groceries',
         location: 'POINT(23.7275 42.6977)',
       };

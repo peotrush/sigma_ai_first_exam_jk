@@ -28,7 +28,7 @@
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.2.10",
-    "@nestjs/swagger": "^11.2.2",
+    "@nestjs/swagger": "^8.0.0",
     "@nestjs/typeorm": "^10.0.0",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
@@ -47,7 +47,7 @@
     "@kash/shared": "file:../../packages/shared"
   },
   "devDependencies": {
-    "@nestjs/cli": "^11.0.10",
+    "@nestjs/cli": "^10.4.9",
     "@nestjs/schematics": "^10.0.2",
     "@nestjs/testing": "^10.2.10",
     "@types/bcrypt": "^5.0.2",

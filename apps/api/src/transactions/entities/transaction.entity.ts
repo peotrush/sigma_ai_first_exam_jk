@@ -15,6 +15,11 @@ export enum TransactionSource {
   MANUAL = 'manual',
 }
 
+export enum TransactionType {
+  INCOME = 'income',
+  EXPENSE = 'expense',
+}
+
 @Entity('transactions')
 @Index('idx_user_timestamp', ['userId', 'timestamp'])
 @Index('idx_user_created', ['userId', 'createdAt'])
@@ -56,6 +61,12 @@ export class Transaction {
     default: TransactionSource.MANUAL,
   })
   source!: TransactionSource;
+
+  @Column('enum', {
+    enum: TransactionType,
+    default: TransactionType.EXPENSE,
+  })
+  type!: TransactionType;
 
   @CreateDateColumn()
   createdAt!: Date;

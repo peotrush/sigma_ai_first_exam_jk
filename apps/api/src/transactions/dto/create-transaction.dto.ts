@@ -1,5 +1,5 @@
 import { IsPositive, IsDateString, IsEnum, IsOptional, MaxLength } from 'class-validator';
-import { TransactionSource } from '../entities/transaction.entity';
+import { TransactionSource, TransactionType } from '../entities/transaction.entity';
 
 /**
  * DTO for creating a transaction
@@ -34,6 +34,14 @@ export class CreateTransactionDto {
     message: `Source must be one of: ${Object.values(TransactionSource).join(', ')}`,
   })
   source!: TransactionSource;
+
+  /**
+   * Transaction type: income or expense
+   */
+  @IsEnum(TransactionType, {
+    message: `Type must be one of: ${Object.values(TransactionType).join(', ')}`,
+  })
+  type!: TransactionType;
 
   /**
    * Optional category for transaction

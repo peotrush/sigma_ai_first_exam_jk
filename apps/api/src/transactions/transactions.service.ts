@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Transaction } from './entities/transaction.entity';
+import { Transaction, TransactionType } from './entities/transaction.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { TransactionDto } from './dto/transaction.dto';
 
@@ -33,7 +33,7 @@ export class TransactionsService {
     createTransactionDto: CreateTransactionDto,
   ): Promise<TransactionDto> {
     try {
-      const { amount, timestamp, source, category, location } =
+      const { amount, timestamp, source, type, category, location } =
         createTransactionDto;
 
       // Validate timestamp is not in the future
@@ -50,6 +50,7 @@ export class TransactionsService {
         amount,
         timestamp: timestampDate,
         source,
+        type,
         category: category || null,
         location: location || null,
       });
@@ -264,6 +265,7 @@ export class TransactionsService {
       category: transaction.category,
       location: transaction.location,
       source: transaction.source,
+      type: transaction.type,
       createdAt: transaction.createdAt,
       updatedAt: transaction.updatedAt,
     };
